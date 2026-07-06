@@ -8,10 +8,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0",
-    "check-types": "next typegen && tsc --noEmit"
+    "check-types": "next typegen && tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@google/genai": "^2.10.0",
+    "@prisma/client": "^7.8.0",
     "@repo/ui": "workspace:*",
+    "@tiptap/pm": "^3.27.2",
+    "@tiptap/react": "^3.27.2",
+    "@tiptap/starter-kit": "^3.27.2",
     "next": "16.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -22,7 +32,9 @@
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "dotenv": "^17.4.2",
     "eslint": "^9.39.1",
+    "prisma": "^7.8.0",
     "typescript": "5.9.2"
   }
 }
