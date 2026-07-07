@@ -10,7 +10,7 @@ export default async function SignInPage() {
   const session = await getServerSession(authOptions);
 
   if (session) {
-    //redirect("/dashboard");
+    redirect("/dashboard");
   }
 
   const providers = await getProviders();
