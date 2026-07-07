@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+/* Tiptap Placeholder Styling */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #a1a1aa; /* text-zinc-400 */
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Ensure Tiptap takes up full width cleanly */
+.ProseMirror {
+  outline: none !important;
+}
