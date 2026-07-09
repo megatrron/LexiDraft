@@ -1,159 +1,83 @@
-# Turborepo starter
+# ✍️ LexiDraft
 
-This Turborepo starter is maintained by the Turborepo core team.
+LexiDraft is a modern, high-performance rich-text note application built for frictionless writing. It features an integrated AI assistant, robust rich-text editing, secure public sharing, and a beautiful, distraction-free UI.
 
-## Using this example
+## ✨ Core Features
 
-Run the following command:
+* **Rich Text Editing:** Powered by Tiptap and Tailwind Typography for a seamless, Notion-like writing experience.
+* **AI Writing Assistant:** Integrated Gemini AI to instantly polish grammar, expand bullet points into prose, generate TL;DR summaries, and append technical contexts.
+* **Secure Web Sharing:** One-click publishing generates a unique, read-only public link to share notes instantly.
+* **Frictionless PDF Export:** Native browser print integration engineered to strip away UI elements and download crisp, perfectly formatted PDFs.
+* **Global Dark Mode:** Full system-theme syncing and manual toggling via `next-themes`.
+* **Auto-Saving:** Silent, debounced background saving ensures you never lose a keystroke.
 
-```sh
-npx create-turbo@latest
-```
+## 🛠️ Tech Stack
 
-## What's inside?
+This project is structured as a **Turborepo** monorepo to separate frontend logic from database schemas cleanly.
 
-This Turborepo includes the following packages/apps:
+* **Framework:** Next.js (App Router)
+* **Styling:** Tailwind CSS + `@tailwindcss/typography`
+* **Editor:** Tiptap
+* **Database:** Neon (Serverless Postgres) + Prisma ORM
+* **Authentication:** NextAuth.js
+* **AI Provider:** Google Gemini API
 
-### Apps and Packages
+## 🚀 Getting Started
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### 1. Clone the repository
+\`\`\`bash
+git clone https://github.com/yourusername/lexidraft.git
+cd lexidraft
+\`\`\`
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### 2. Install Dependencies
+LexiDraft uses `pnpm` as its package manager.
+\`\`\`bash
+pnpm install
+\`\`\`
 
-### Utilities
+### 3. Environment Variables
+Create a `.env` file in the root of the project and populate it with your specific keys:
 
-This Turborepo has some additional tools already setup for you:
+\`\`\`env
+# Database (Neon DB)
+DATABASE_URL="postgresql://user:password@hostname/dbname?sslmode=require"
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+# Authentication (NextAuth)
+NEXTAUTH_SECRET="your_super_secret_key"
+NEXTAUTH_URL="http://localhost:3000"
 
-### Build
+# AI Integration
+GEMINI_API_KEY="your_google_gemini_api_key"
+\`\`\`
 
-To build all apps and packages, run the following command:
+### 4. Database Setup
+Push the Prisma schema to your Neon database to create the `User` and `Note` tables:
+\`\`\`bash
+pnpm --filter @repo/db dlx prisma db push
+pnpm --filter @repo/db dlx prisma generate
+\`\`\`
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### 5. Run the Development Server
+Boot up the Next.js frontend and the Turbopack engine:
+\`\`\`bash
+pnpm run dev
+\`\`\`
+Visit `http://localhost:3000` in your browser to start writing.
 
-```sh
-cd my-turborepo
-turbo build
-```
+## 📂 Project Structure
 
-Without global `turbo`, use your package manager:
+\`\`\`text
+lexidraft/
+├── apps/
+│   └── web/                # Next.js Application (Pages, API routes, UI)
+│       ├── app/api/        # Next.js API Route Handlers (AI, Share, Notes)
+│       ├── app/editor/     # Core Tiptap Editor Client
+│       └── app/share/      # Public Read-Only View
+├── packages/
+│   └── db/                 # Database Package
+│       ├── prisma/         # Schema and Migrations
+│       └── config.ts       # Shared Prisma Client
+└── turbo.json              # Turborepo configuration
+\`\`\`
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)

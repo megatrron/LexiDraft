@@ -134,9 +134,9 @@ export default function SignInPageClient({ providers }: SignInPageClientProps): 
             })}
         </div>
 
-        <p className="mt-8 text-center text-xs text-zinc-500">
+        {/* <p className="mt-8 text-center text-xs text-zinc-500">
           By continuing, you agree to LexiDraft's Terms of Service and Privacy Policy.
-        </p>
+        </p> */}
 
       </div>
     </div>
