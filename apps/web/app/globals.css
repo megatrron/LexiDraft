@@ -22,3 +22,16 @@
 .prose a:hover {
   color: #52525b;
 }
+
+@media print {
+  /* This tells the browser to remove the default margins where headers/footers live */
+  @page {
+    margin: 0;
+  }
+
+  /* This adds the margin back physically to your document so the text doesn't touch the edge of the paper */
+  body {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}

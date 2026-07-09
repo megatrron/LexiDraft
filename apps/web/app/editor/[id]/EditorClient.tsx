@@ -170,9 +170,17 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
         }
     };
 
+    // ---------------------------------------------------------------------------
+    // PDF Export Logic
+    // ---------------------------------------------------------------------------
+    const [isExporting, setIsExporting] = useState(false);
+
+    const exportToPDF = async () => {
+        window.print();
+    };
     return (
         <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-200">
-            <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-100 h-14 flex items-center justify-between px-6">
+            <header className="print:hidden sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-100 h-14 flex items-center justify-between px-6">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">
                         ← Dashboard
@@ -228,7 +236,14 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
                             </div>
                         )}
                     </div>
-
+                    {/* 👇 NEW: The PDF Export Button 👇 */}
+                    <button 
+                        onClick={exportToPDF}
+                        disabled={isExporting}
+                        className="h-8 px-3 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 disabled:bg-zinc-50 disabled:text-zinc-400 text-zinc-700 transition-colors flex items-center gap-1.5"
+                    >
+                        {isExporting ? "Exporting..." : "📄 Download PDF"}
+                    </button>
                     {/* AI Control Dropdown */}
                     <div className="relative" ref={aiMenuRef}>
                         <button
@@ -254,7 +269,7 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
                 </div>
             </header>
 
-            <main className="max-w-3xl mx-auto px-6 pt-16">
+            <main id="pdf-export-area" className="max-w-3xl mx-auto px-6 pt-16 pb-16 bg-white print:pt-0 print:px-0">
                 <input
                     type="text"
                     value={title}
