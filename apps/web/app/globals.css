@@ -1,15 +1,24 @@
 @import "tailwindcss";
 
-/* Tiptap Placeholder Styling */
 .tiptap p.is-editor-empty:first-child::before {
-  color: #a1a1aa; /* text-zinc-400 */
+  color: #a1a1aa;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
 }
 
-/* Ensure Tiptap takes up full width cleanly */
 .ProseMirror {
   outline: none !important;
+}
+
+/* Custom crisp link treatment inside the editor */
+.prose a {
+  color: #18181b;
+  text-underline-offset: 4px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.prose a:hover {
+  color: #52525b;
 }

@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -22,7 +23,12 @@ export async function POST(req: Request) {
     }
 
     // Dynamic system instructions tailored to your 4 discussed features
-    let systemInstruction = "You are an expert writing assistant inside LexiDraft. Output only the requested text modification directly without any conversational meta-commentary.";
+    let systemInstruction = 
+      "You are an expert writing assistant inside LexiDraft, a modern rich-text note application. " +
+      "CRITICAL RULES:\n" +
+      "1. Do NOT use markdown syntax. Do NOT use asterisks (**) for bolding, or hashes (#) for headers.\n" +
+      "2. You MUST use clean, standard HTML tags exclusively for formatting. Use <p> for paragraphs, <strong> for bold text, <em> for italics, <ul> and <li> for lists, and <h3> for subheadings.\n" +
+      "3. Output your response directly as the raw text/HTML structure. Do NOT wrap your response in markdown code blocks (such as ```html ... ```).";
 
     if (action === "polish") {
       systemInstruction += " Task: Polish & Refine. Fix all grammar mistakes, improve sentence flow, and adopt a clean, professional tone while strictly preserving the original meaning. Do not add completely new ideas.";

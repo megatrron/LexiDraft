@@ -71,7 +71,6 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
     const editor = useEditor({
         extensions: [
             StarterKit,
-            // 2. Register the Link extension with safe defaults
             LinkExtension.configure({
                 openOnClick: true,
                 autolink: true,
@@ -88,9 +87,11 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
             }),
         ],
         content: note.content,
+        // 👇 Update this entire block below
         editorProps: {
             attributes: {
-                class: "prose prose-zinc prose-lg max-w-none focus:outline-none min-h-[500px] pb-32",
+                spellcheck: "false", // Fixes the red squigglies
+                class: "prose prose-zinc prose-lg max-w-none focus:outline-none min-h-[500px] pb-32 border border-zinc-100 rounded-xl p-6 shadow-sm bg-white",
             },
         },
         onUpdate: ({ editor }) => {
@@ -99,6 +100,9 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
         },
     });
 
+    // ---------------------------------------------------------------------------
+    // Core AI Actions Router
+    // ---------------------------------------------------------------------------
     // ---------------------------------------------------------------------------
     // Core AI Actions Router
     // ---------------------------------------------------------------------------
@@ -111,8 +115,6 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
 
         try {
             const currentContent = editor.getText();
-
-            // Get currently selected text (useful if they want to expand or polish a specific sentence)
             const { from, to } = editor.state.selection;
             const selectedText = editor.state.doc.textBetween(from, to, " ");
 
@@ -122,29 +124,36 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
                 selectedText: selectedText || null,
             });
 
-            const aiText = response.data.text;
+            let aiText = response.data.text;
             if (!aiText) return;
+
+            // 🔥 FIX 1: Clean up any markdown code block wrappers from the AI response
+            aiText = aiText
+                .replace(/^```html\s*/i, "")   // Removes leading ```html
+                .replace(/^```\s*/i, "")       // Removes leading ```
+                .replace(/\s*```$/, "")        // Removes trailing ```
+                .trim();
 
             // Execute Tiptap text transformation strategies based on choices
             if (action === "tldr") {
-                // 1. Insert TL;DR right at the top
+                // Insert TL;DR right at the top as parsed HTML elements
                 editor.chain().focus().insertContentAt(0, `<p><strong>TL;DR:</strong> ${aiText}</p><hr />`).run();
             } else if (action === "reference") {
-                // Append reference guide cleanly at the very bottom as parsed HTML
+                // Append reference guide cleanly at the very bottom
                 const endOfDoc = editor.state.doc.content.size;
                 editor
                     .chain()
                     .focus()
-                    .insertContentAt(endOfDoc, `<br /><hr /><div>${aiText}</div>`)
+                    .insertContentAt(endOfDoc, `<br /><hr /><h3>🔍 References & Technical Context</h3><div>${aiText}</div>`)
                     .run();
             } else if (action === "polish" || action === "expand") {
-                // 3. Inline Replacement/Extension
+                // Inline Replacement/Extension
                 if (selectedText) {
-                    // If a user highlighted text, swap it directly out with the optimized version
+                    // Replace selection completely with the formatted response
                     editor.chain().focus().insertContent(aiText).run();
                 } else {
-                    // Otherwise append inline where the cursor currently rests
-                    editor.chain().focus().insertContent(`\n${aiText}\n`).run();
+                    // Otherwise append it at the cursor
+                    editor.chain().focus().insertContent(`<p>${aiText}</p>`).run();
                 }
             }
 
@@ -157,7 +166,6 @@ export default function EditorClient({ note }: { note: Note }): React.JSX.Elemen
             setIsAiLoading(false);
         }
     };
-
     return (
         <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-200">
             {/* Editor Navbar */}
