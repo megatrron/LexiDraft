@@ -65,19 +65,4 @@ pnpm run dev
 \`\`\`
 Visit `http://localhost:3000` in your browser to start writing.
 
-## 📂 Project Structure
-
-\`\`\`text
-lexidraft/
-├── apps/
-│   └── web/                # Next.js Application (Pages, API routes, UI)
-│       ├── app/api/        # Next.js API Route Handlers (AI, Share, Notes)
-│       ├── app/editor/     # Core Tiptap Editor Client
-│       └── app/share/      # Public Read-Only View
-├── packages/
-│   └── db/                 # Database Package
-│       ├── prisma/         # Schema and Migrations
-│       └── config.ts       # Shared Prisma Client
-└── turbo.json              # Turborepo configuration
-\`\`\`
 
